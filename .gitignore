@@ -1,0 +1,12 @@
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# File pribadi
+/CV_ATS_ARDIANSYAH SURYA PRATAMA.pdf
+/DSC06119.JPG
+
+# Env (jaga-jaga)
+.env
+.env.local
