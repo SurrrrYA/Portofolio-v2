@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
   Layers,
   ExternalLink,
@@ -13,6 +14,9 @@ import {
   Image as ImageIcon,
 } from 'lucide-react';
 import { Github } from '../common/Icons';
+import { Reveal } from '../common/Reveal';
+import TiltCard from '../common/TiltCard';
+import { easeOutExpo } from '../../lib/motion';
 
 const INITIAL_LIMIT = 3;
 
@@ -103,12 +107,12 @@ const ProjectsSection = ({ projects }) => {
   return (
     <section id="projects-section" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       {/* Section Header */}
-      <div className="text-center max-w-3xl mx-auto mb-12">
+      <Reveal className="text-center max-w-3xl mx-auto mb-12">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 text-xs font-bold uppercase tracking-wider mb-3 shadow-sm">
           <Layers className="w-3.5 h-3.5" />
           <span>Karya & Portofolio</span>
         </div>
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight section-heading">
           Proyek Terpilih yang Pernah Saya Bangun
         </h2>
         <p className="mt-3 text-slate-600 dark:text-slate-400 text-base">
@@ -117,28 +121,51 @@ const ProjectsSection = ({ projects }) => {
 
         {/* Filter Pills */}
         <div className="flex flex-wrap items-center justify-center gap-2 mt-8">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => { setSelectedCategory(cat); setShowAll(false); }}
-              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
-                selectedCategory === cat
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+          {categories.map((cat) => {
+            const isActive = selectedCategory === cat;
+            return (
+              <motion.button
+                key={cat}
+                onClick={() => { setSelectedCategory(cat); setShowAll(false); }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`relative px-4 py-1.5 rounded-full text-xs font-bold transition-colors ${
+                  isActive
+                    ? 'text-white'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                }`}
+              >
+                {isActive && (
+                  <motion.span
+                    layoutId="project-filter-pill"
+                    className="absolute inset-0 rounded-full bg-blue-600 shadow-sm"
+                    transition={{ type: 'spring', stiffness: 320, damping: 30 }}
+                  />
+                )}
+                <span className="relative z-10">{cat}</span>
+              </motion.button>
+            );
+          })}
         </div>
-      </div>
+      </Reveal>
 
       {/* Projects Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 scroll-reveal-stagger">
+      <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <AnimatePresence mode="popLayout">
         {visibleProjects.map((project) => (
-          <div
+          <motion.div
             key={project.id}
-            className="group relative flex flex-col bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-1"
+            layout
+            initial={{ opacity: 0, scale: 0.94, y: 24 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.15 }}
+            exit={{ opacity: 0, scale: 0.92, y: 12 }}
+            transition={{ duration: 0.45, ease: easeOutExpo }}
+            className="h-full"
+          >
+          <TiltCard
+            intensity={5}
+            className="group relative flex h-full flex-col bg-white/95 dark:bg-slate-900/95 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-lg transition-shadow duration-300 card-shine backdrop-blur"
           >
             {/* Project Thumbnail Image */}
             <div className="relative aspect-video w-full overflow-hidden bg-slate-100 dark:bg-slate-950">
@@ -245,30 +272,48 @@ const ProjectsSection = ({ projects }) => {
                 </div>
               </div>
             </div>
-          </div>
+          </TiltCard>
+          </motion.div>
         ))}
-      </div>
+        </AnimatePresence>
+      </motion.div>
 
       {/* Show More / Less Button */}
       {hasMore && (
         <div className="mt-10 text-center">
-          <button
+          <motion.button
             onClick={() => setShowAll(!showAll)}
-            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.96 }}
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
           >
             {showAll ? (
               <><ChevronUp className="w-4 h-4" /> Tutup</>
             ) : (
               <><ChevronDown className="w-4 h-4" /> Lihat Semua {filteredProjects.length} Proyek</>
             )}
-          </button>
+          </motion.button>
         </div>
       )}
 
       {/* Project Detail Modal with Full Gallery & Lightbox */}
+      <AnimatePresence>
       {activeModalProject && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-sm animate-fade-in">
-          <div className="relative w-full max-w-3xl max-h-[92vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl p-6 sm:p-8">
+        <motion.div
+          key="project-modal"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.25 }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-sm"
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.94, y: 24 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.96, y: 14 }}
+            transition={{ type: 'spring', stiffness: 260, damping: 24 }}
+            className="relative w-full max-w-3xl max-h-[92vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl p-6 sm:p-8"
+          >
             {/* Close Button */}
             <button
               onClick={() => setActiveModalProject(null)}
@@ -285,11 +330,18 @@ const ProjectsSection = ({ projects }) => {
                 onClick={() => setFullscreenLightbox(true)}
               >
                 {currentImage ? (
-                  <img
-                    src={currentImage.image_url}
-                    alt={currentImage.caption || activeModalProject.title}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-                  />
+                  <AnimatePresence mode="wait">
+                    <motion.img
+                      key={currentImage.image_url}
+                      src={currentImage.image_url}
+                      alt={currentImage.caption || activeModalProject.title}
+                      initial={{ opacity: 0, scale: 1.03 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                    />
+                  </AnimatePresence>
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-slate-400">
                     <ImageIcon className="w-10 h-10" />
@@ -433,14 +485,21 @@ const ProjectsSection = ({ projects }) => {
                 </a>
               )}
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       )}
+      </AnimatePresence>
 
       {/* Fullscreen Lightbox Modal */}
+      <AnimatePresence>
       {fullscreenLightbox && currentImage && (
-        <div
-          className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/95 backdrop-blur-md p-4 animate-fade-in"
+        <motion.div
+          key="lightbox"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.25 }}
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/95 backdrop-blur-md p-4"
           onClick={() => setFullscreenLightbox(false)}
         >
           {/* Close button */}
@@ -495,8 +554,9 @@ const ProjectsSection = ({ projects }) => {
               )}
             </div>
           </div>
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
     </section>
   );
 };

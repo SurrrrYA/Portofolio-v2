@@ -11,6 +11,10 @@ import EducationSection from '../../components/portfolio/EducationSection';
 import ContactSection from '../../components/portfolio/ContactSection';
 // Footer removed
 import GuidedTour from '../../components/portfolio/GuidedTour';
+import AuroraBackground from '../../components/portfolio/AuroraBackground';
+import ScrollProgress from '../../components/portfolio/ScrollProgress';
+import CursorGlow from '../../components/portfolio/CursorGlow';
+import Preloader from '../../components/portfolio/Preloader';
 import { Compass, Loader2 } from 'lucide-react';
 
 const HomePage = () => {
@@ -82,35 +86,6 @@ const HomePage = () => {
     fetchAllData();
   }, []);
 
-  // Scroll Reveal Animations via Intersection Observer
-  useEffect(() => {
-    if (loading) return;
-
-    const timer = setTimeout(() => {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('revealed');
-              observer.unobserve(entry.target);
-            }
-          });
-        },
-        {
-          threshold: 0.08,
-          rootMargin: '0px 0px -20px 0px',
-        }
-      );
-
-      const revealElements = document.querySelectorAll(
-        '.scroll-reveal, .scroll-reveal-left, .scroll-reveal-right, .scroll-reveal-scale, .scroll-reveal-stagger'
-      );
-      revealElements.forEach((el) => observer.observe(el));
-    }, 60);
-
-    return () => clearTimeout(timer);
-  }, [loading]);
-
   const handleStartTour = () => {
     setTourTrigger((prev) => prev + 1);
   };
@@ -118,7 +93,11 @@ const HomePage = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-slate-950 text-slate-100">
-        <Loader2 className="w-10 h-10 text-blue-500 animate-spin mb-4" />
+        <div className="relative mb-5 flex h-16 w-16 items-center justify-center">
+          <span className="absolute inset-0 rounded-full border border-blue-500/30" />
+          <span className="absolute inset-0 animate-spin-slow rounded-full border-2 border-transparent border-t-blue-400" />
+          <Loader2 className="w-7 h-7 text-blue-500 animate-spin" />
+        </div>
         <p className="text-sm font-semibold tracking-wide text-slate-400">
           Memuat Portofolio...
         </p>
@@ -127,66 +106,68 @@ const HomePage = () => {
   }
 
   return (
-    <div className="relative overflow-x-hidden min-h-screen">
-      {/* Navigation */}
-      <Navbar
-        onStartTour={handleStartTour}
-        siteTitle={data.settings?.site_title}
-      />
+    <>
+      <Preloader name={data.profile?.name} />
+      <CursorGlow />
+      <div className="relative min-h-screen overflow-x-hidden">
+        <AuroraBackground />
+        <ScrollProgress />
 
-      {/* Main Content Sections with Scroll Reveal */}
-      <main>
-        <HeroSection
-          profile={data.profile}
-          settings={data.settings}
-          socialLinks={data.socialLinks}
-        />
-        <div className="scroll-reveal">
-          <AboutSection profile={data.profile} />
-        </div>
-        <div className="scroll-reveal">
-          <ProjectsSection projects={data.projects} />
-        </div>
-        <div className="scroll-reveal">
-          <SkillsSection skillCategories={data.skills} />
-        </div>
-        <div className="scroll-reveal">
-          <CertificatesSection certificates={data.certificates} />
-        </div>
-        <div className="scroll-reveal">
-          <ExperienceSection experiences={data.experiences} />
-        </div>
-        <div className="scroll-reveal">
-          <EducationSection educations={data.educations} />
-        </div>
-        <div className="scroll-reveal">
-          <ContactSection
-            profile={data.profile}
-            socialLinks={data.socialLinks}
+        <div className="relative z-10">
+          {/* Navigation */}
+          <Navbar
+            onStartTour={handleStartTour}
+            siteTitle={data.settings?.site_title}
+          />
+
+          {/* Main Content Sections */}
+          <main>
+            <HeroSection
+              profile={data.profile}
+              settings={data.settings}
+              socialLinks={data.socialLinks}
+            />
+            <AboutSection
+              profile={data.profile}
+              stats={{
+                projects: data.projects.length,
+                certificates: data.certificates.length,
+                experiences: data.experiences.length,
+                gpa: data.educations?.[0]?.gpa,
+              }}
+            />
+            <ProjectsSection projects={data.projects} />
+            <SkillsSection skillCategories={data.skills} />
+            <CertificatesSection certificates={data.certificates} />
+            <ExperienceSection experiences={data.experiences} />
+            <EducationSection educations={data.educations} />
+            <ContactSection
+              profile={data.profile}
+              socialLinks={data.socialLinks}
+            />
+          </main>
+
+          {/* Floating Guided Tour Button */}
+          <button
+            onClick={handleStartTour}
+            className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-30 flex items-center gap-2 px-3 py-2.5 sm:px-4 sm:py-3 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-2xl shadow-blue-600/50 hover:scale-105 active:scale-95 transition-all relative"
+            title="Buka Interaktif Tour"
+          >
+            <span className="absolute inset-0 rounded-full bg-blue-500/30 animate-ping" />
+            <Compass className="relative w-4 h-4 animate-spin-slow" />
+            <span className="relative hidden sm:inline">Panduan Tour</span>
+          </button>
+
+          {/* Guided Tour Driver Component */}
+          <GuidedTour
+            steps={data.tour.steps}
+            enabled={data.tour.enabled}
+            triggerTour={tourTrigger}
+            onTourComplete={() => {}}
           />
         </div>
-      </main>
-
-
-
-      {/* Floating Guided Tour Button */}
-      <button
-        onClick={handleStartTour}
-        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-30 flex items-center gap-2 px-3 py-2.5 sm:px-4 sm:py-3 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-2xl shadow-blue-600/50 hover:scale-105 active:scale-95 transition-all"
-        title="Buka Interaktif Tour"
-      >
-        <Compass className="w-4 h-4 animate-spin-slow" />
-        <span className="hidden sm:inline">Panduan Tour</span>
-      </button>
-
-      {/* Guided Tour Driver Component */}
-      <GuidedTour
-        steps={data.tour.steps}
-        enabled={data.tour.enabled}
-        triggerTour={tourTrigger}
-        onTourComplete={() => {}}
-      />
-    </div>
+      </div>
+    </>
   );
 };
 

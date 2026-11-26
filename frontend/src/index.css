@@ -157,3 +157,283 @@
 .dark ::-webkit-scrollbar-thumb:hover {
   background: #334155;
 }
+
+/* ============================================================
+   Cinematic motion layer
+   ============================================================ */
+
+/* Aurora background */
+.aurora-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  opacity: 0.26;
+  will-change: transform;
+}
+
+.light .aurora-blob {
+  opacity: 0.16;
+}
+
+.dark .aurora-blob {
+  opacity: 0.34;
+}
+
+.aurora-blob-1 {
+  top: -14rem;
+  left: -12rem;
+  width: 44rem;
+  height: 44rem;
+  background: radial-gradient(circle at 35% 35%, rgba(59, 130, 246, 0.62), transparent 66%);
+  animation: auroraDrift1 22s ease-in-out infinite alternate;
+}
+
+.aurora-blob-2 {
+  top: -10rem;
+  right: -14rem;
+  width: 40rem;
+  height: 40rem;
+  background: radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.55), transparent 68%);
+  animation: auroraDrift2 26s ease-in-out infinite alternate;
+}
+
+.aurora-blob-3 {
+  bottom: -16rem;
+  left: 15%;
+  width: 38rem;
+  height: 38rem;
+  background: radial-gradient(circle at 50% 50%, rgba(34, 211, 238, 0.48), transparent 68%);
+  animation: auroraDrift3 24s ease-in-out infinite alternate;
+}
+
+.aurora-blob-4 {
+  bottom: 5%;
+  right: 8%;
+  width: 30rem;
+  height: 30rem;
+  background: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.34), transparent 70%);
+  animation: auroraDrift4 28s ease-in-out infinite alternate;
+}
+
+@keyframes auroraDrift1 {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(7rem, 4rem, 0) scale(1.16); }
+}
+
+@keyframes auroraDrift2 {
+  from { transform: translate3d(0, 0, 0) scale(1.05); }
+  to { transform: translate3d(-6rem, 5rem, 0) scale(0.94); }
+}
+
+@keyframes auroraDrift3 {
+  from { transform: translate3d(0, 0, 0) scale(0.96); }
+  to { transform: translate3d(6rem, -5rem, 0) scale(1.12); }
+}
+
+@keyframes auroraDrift4 {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(-4rem, -6rem, 0) scale(1.1); }
+}
+
+.aurora-grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.5;
+  background-image:
+    linear-gradient(to right, rgba(59, 130, 246, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(59, 130, 246, 0.08) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse at 50% 0%, black 0%, transparent 74%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 0%, black 0%, transparent 74%);
+}
+
+.dark .aurora-grid {
+  opacity: 0.34;
+}
+
+.aurora-noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+}
+
+.dark .aurora-noise {
+  opacity: 0.055;
+}
+
+/* Floating particles */
+.particle-float {
+  animation-name: particleFloat;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  will-change: transform;
+}
+
+@keyframes particleFloat {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(10px, -24px, 0); }
+}
+
+/* Gradient headline */
+.hero-gradient-text {
+  background-image: linear-gradient(110deg, #2563eb, #06b6d4, #7c3aed, #2563eb);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradientShift 7s ease-in-out infinite;
+}
+
+.dark .hero-gradient-text {
+  background-image: linear-gradient(110deg, #60a5fa, #22d3ee, #a78bfa, #60a5fa);
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Section heading accent */
+.section-heading {
+  position: relative;
+}
+
+.section-heading::after {
+  content: '';
+  display: block;
+  width: 76px;
+  height: 3px;
+  margin: 14px auto 0;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #2563eb, #22d3ee, #8b5cf6);
+  box-shadow: 0 0 18px rgba(59, 130, 246, 0.45);
+}
+
+/* Infinite tech marquee */
+.marquee-mask {
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+
+.marquee-track {
+  animation-name: marquee;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+/* Card shine sweep */
+.card-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-shine::after {
+  content: '';
+  position: absolute;
+  top: -60%;
+  left: -80%;
+  width: 45%;
+  height: 220%;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transform: rotate(24deg);
+  transition: left 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark .card-shine::after {
+  background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.18), transparent);
+}
+
+.card-shine:hover::after {
+  left: 135%;
+}
+
+/* Button shine sweep */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shine::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(110deg, transparent 25%, rgba(255, 255, 255, 0.32) 50%, transparent 75%);
+  transform: translateX(-130%);
+  transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-shine:hover::before {
+  transform: translateX(130%);
+}
+
+/* Reusable animations */
+@keyframes spinSlow {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes spinSlowReverse {
+  to { transform: rotate(-360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-spin-slow {
+  animation: spinSlow 11s linear infinite;
+}
+
+.animate-spin-slow-reverse {
+  animation: spinSlowReverse 16s linear infinite;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out both;
+}
+
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Subtle input focus ring */
+.input-glow:focus {
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.14);
+}
+
+/* Reduced motion for the cinematic layer */
+@media (prefers-reduced-motion: reduce) {
+  .aurora-blob,
+  .particle-float,
+  .hero-gradient-text,
+  .marquee-track,
+  .animate-spin-slow,
+  .animate-spin-slow-reverse,
+  .animate-fade-in {
+    animation: none !important;
+  }
+
+  .card-shine::after,
+  .btn-shine::before {
+    display: none !important;
+  }
+}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { MotionConfig } from 'framer-motion';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ToastProvider } from './contexts/ToastContext';
@@ -42,47 +43,49 @@ const ProtectedRoute = ({ children }) => {
 
 function App() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <ToastProvider>
-          <BrowserRouter>
-            <Routes>
-              {/* Public Website */}
-              <Route path="/" element={<HomePage />} />
+    <MotionConfig reducedMotion="user">
+      <ThemeProvider>
+        <AuthProvider>
+          <ToastProvider>
+            <BrowserRouter>
+              <Routes>
+                {/* Public Website */}
+                <Route path="/" element={<HomePage />} />
 
-              {/* Admin Login */}
-              <Route path="/admin/login" element={<LoginPage />} />
+                {/* Admin Login */}
+                <Route path="/admin/login" element={<LoginPage />} />
 
-              {/* Protected Admin CMS Dashboard */}
-              <Route
-                path="/admin"
-                element={
-                  <ProtectedRoute>
-                    <AdminLayout />
-                  </ProtectedRoute>
-                }
-              >
-                <Route index element={<DashboardOverview />} />
-                <Route path="profile" element={<ProfileAdmin />} />
-                <Route path="projects" element={<ProjectsAdmin />} />
-                <Route path="skills" element={<SkillsAdmin />} />
-                <Route path="certificates" element={<CertificatesAdmin />} />
-                <Route path="experiences" element={<ExperiencesAdmin />} />
-                <Route path="educations" element={<EducationsAdmin />} />
-                <Route path="social-links" element={<SocialLinksAdmin />} />
-                <Route path="media" element={<MediaAdmin />} />
-                <Route path="messages" element={<MessagesAdmin />} />
-                <Route path="guided-tour" element={<GuidedTourAdmin />} />
-                <Route path="settings" element={<SettingsAdmin />} />
-              </Route>
+                {/* Protected Admin CMS Dashboard */}
+                <Route
+                  path="/admin"
+                  element={
+                    <ProtectedRoute>
+                      <AdminLayout />
+                    </ProtectedRoute>
+                  }
+                >
+                  <Route index element={<DashboardOverview />} />
+                  <Route path="profile" element={<ProfileAdmin />} />
+                  <Route path="projects" element={<ProjectsAdmin />} />
+                  <Route path="skills" element={<SkillsAdmin />} />
+                  <Route path="certificates" element={<CertificatesAdmin />} />
+                  <Route path="experiences" element={<ExperiencesAdmin />} />
+                  <Route path="educations" element={<EducationsAdmin />} />
+                  <Route path="social-links" element={<SocialLinksAdmin />} />
+                  <Route path="media" element={<MediaAdmin />} />
+                  <Route path="messages" element={<MessagesAdmin />} />
+                  <Route path="guided-tour" element={<GuidedTourAdmin />} />
+                  <Route path="settings" element={<SettingsAdmin />} />
+                </Route>
 
-              {/* Fallback */}
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </BrowserRouter>
-        </ToastProvider>
-      </AuthProvider>
-    </ThemeProvider>
+                {/* Fallback */}
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </BrowserRouter>
+          </ToastProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </MotionConfig>
   );
 }
 

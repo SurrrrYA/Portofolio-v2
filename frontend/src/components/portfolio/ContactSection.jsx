@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
-import { Mail, Send, MapPin, CheckCircle2, MessageSquare, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Mail, Send, MapPin, MessageSquare, Loader2 } from 'lucide-react';
 import api from '../../services/api';
 import { useToast } from '../../contexts/ToastContext';
+import { Reveal, Stagger, StaggerItem } from '../common/Reveal';
+import MagneticButton from '../common/MagneticButton';
+import { easeOutExpo } from '../../lib/motion';
 
 const ContactSection = ({ profile, socialLinks }) => {
   const { addToast } = useToast();
@@ -36,23 +40,23 @@ const ContactSection = ({ profile, socialLinks }) => {
   return (
     <section id="contact-section" className="py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
       {/* Section Header */}
-      <div className="text-center max-w-3xl mx-auto mb-16">
+      <Reveal className="text-center max-w-3xl mx-auto mb-16">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 text-xs font-bold uppercase tracking-wider mb-3 shadow-sm">
           <MessageSquare className="w-3.5 h-3.5" />
           <span>Hubungi Saya</span>
         </div>
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight section-heading">
           Mari Memulai Diskusi Proyek atau Peluang Karir
         </h2>
         <p className="mt-3 text-slate-600 dark:text-slate-400 text-base">
           Saya selalu terbuka untuk mendiskusikan peluang karir, konsultasi pengembangan aplikasi, atau tawaran kerja sama profesional.
         </p>
-      </div>
+      </Reveal>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Left Column: Info Cards */}
-        <div className="lg:col-span-5 space-y-4 scroll-reveal-left">
-          <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+        <Reveal variant="left" className="lg:col-span-5 space-y-4">
+          <div className="card-shine p-6 rounded-2xl bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-slate-800 shadow-sm backdrop-blur">
             <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-6">
               Informasi Kontak
             </h3>
@@ -108,29 +112,92 @@ const ContactSection = ({ profile, socialLinks }) => {
               </div>
             )}
           </div>
-        </div>
+        </Reveal>
 
         {/* Right Column: Interactive Form */}
-        <div className="lg:col-span-7 scroll-reveal-right">
-          <div className="p-6 sm:p-8 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+        <Reveal variant="right" className="lg:col-span-7">
+          <div className="card-shine p-6 sm:p-8 rounded-2xl bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-slate-800 shadow-sm backdrop-blur">
             {success ? (
-              <div className="py-12 text-center animate-fade-in">
-                <div className="w-16 h-16 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle2 className="w-8 h-8" />
+              <motion.div
+                className="relative py-12 text-center"
+                initial={{ opacity: 0, scale: 0.94 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, ease: easeOutExpo }}
+              >
+                <div className="relative mx-auto mb-4 h-20 w-20">
+                  <motion.svg
+                    viewBox="0 0 52 52"
+                    className="h-20 w-20 text-emerald-500"
+                    initial="hidden"
+                    animate="show"
+                  >
+                    <motion.circle
+                      cx="26"
+                      cy="26"
+                      r="23"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      variants={{
+                        hidden: { pathLength: 0, opacity: 0 },
+                        show: {
+                          pathLength: 1,
+                          opacity: 1,
+                          transition: { duration: 0.7, ease: easeOutExpo },
+                        },
+                      }}
+                    />
+                    <motion.path
+                      d="M15 27l7 7 15-16"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      variants={{
+                        hidden: { pathLength: 0 },
+                        show: {
+                          pathLength: 1,
+                          transition: { duration: 0.5, delay: 0.35, ease: easeOutExpo },
+                        },
+                      }}
+                    />
+                  </motion.svg>
+
+                  {Array.from({ length: 8 }).map((_, index) => {
+                    const angle = (index / 8) * Math.PI * 2;
+                    return (
+                      <motion.span
+                        key={index}
+                        className="absolute left-1/2 top-1/2 h-1.5 w-1.5 rounded-full bg-emerald-400"
+                        initial={{ x: 0, y: 0, opacity: 0, scale: 0 }}
+                        animate={{
+                          x: Math.cos(angle) * 46,
+                          y: Math.sin(angle) * 46,
+                          opacity: [0, 1, 0],
+                          scale: [0, 1, 0.5],
+                        }}
+                        transition={{ duration: 0.9, delay: 0.3, ease: 'easeOut' }}
+                      />
+                    );
+                  })}
                 </div>
+
                 <h4 className="text-2xl font-bold text-slate-900 dark:text-white">Pesan Terkirim!</h4>
                 <p className="mt-2 text-slate-600 dark:text-slate-400 text-sm max-w-md mx-auto">
                   Terima kasih telah menghubungi saya. Pesan Anda telah tersimpan dengan aman dan saya akan segera membalasnya.
                 </p>
-                <button
+                <motion.button
                   onClick={() => setSuccess(false)}
-                  className="mt-6 px-5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold text-sm hover:bg-slate-200 dark:hover:bg-slate-700"
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
+                  className="mt-6 px-5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold text-sm hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                 >
                   Kirim Pesan Lain
-                </button>
-              </div>
+                </motion.button>
+              </motion.div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <Stagger as="form" onSubmit={handleSubmit} className="space-y-4" stagger={0.07}>
                 {/* Honeypot */}
                 <input
                   type="text"
@@ -142,7 +209,7 @@ const ContactSection = ({ profile, socialLinks }) => {
                   autoComplete="off"
                 />
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <StaggerItem className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                       Nama Lengkap *
@@ -153,7 +220,7 @@ const ContactSection = ({ profile, socialLinks }) => {
                       placeholder="e.g. Budi Santoso"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 text-sm"
+                      className="input-glow w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 text-sm"
                     />
                   </div>
 
@@ -167,12 +234,12 @@ const ContactSection = ({ profile, socialLinks }) => {
                       placeholder="budi@example.com"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 text-sm"
+                      className="input-glow w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 text-sm"
                     />
                   </div>
-                </div>
+                </StaggerItem>
 
-                <div>
+                <StaggerItem>
                   <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                     Subjek *
                   </label>
@@ -182,11 +249,11 @@ const ContactSection = ({ profile, socialLinks }) => {
                     placeholder="Diskusi Proyek Web / Peluang Karir"
                     value={formData.subject}
                     onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 text-sm"
+                    className="input-glow w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 text-sm"
                   />
-                </div>
+                </StaggerItem>
 
-                <div>
+                <StaggerItem>
                   <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                     Pesan *
                   </label>
@@ -196,29 +263,31 @@ const ContactSection = ({ profile, socialLinks }) => {
                     placeholder="Tuliskan pesan Anda secara detail di sini..."
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 text-sm resize-none"
+                    className="input-glow w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 text-sm resize-none"
                   />
-                </div>
+                </StaggerItem>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full py-3 px-6 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-sm transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50"
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" /> Mengirim Pesan...
-                    </>
-                  ) : (
-                    <>
-                      <Send className="w-4 h-4" /> Kirim Pesan Sekarang
-                    </>
-                  )}
-                </button>
-              </form>
+                <StaggerItem>
+                  <MagneticButton
+                    type="submit"
+                    disabled={loading}
+                    className="btn-shine w-full py-3 px-6 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-sm transition-colors disabled:opacity-50"
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" /> Mengirim Pesan...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4" /> Kirim Pesan Sekarang
+                      </>
+                    )}
+                  </MagneticButton>
+                </StaggerItem>
+              </Stagger>
             )}
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );
