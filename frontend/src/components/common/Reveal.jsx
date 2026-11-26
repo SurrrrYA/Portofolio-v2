@@ -9,8 +9,10 @@ import {
   fadeIn,
   staggerContainer,
   staggerItem,
-  viewportOnce,
+  staggerItemDown,
+  viewportReplay,
 } from '../../lib/motion';
+import { useScrollDirection } from '../../contexts/ScrollDirectionContext';
 
 const VARIANT_MAP = {
   up: fadeUp,
@@ -39,10 +41,11 @@ export const Reveal = ({
   delay = 0,
   as = 'div',
   amount,
-  once = true,
+  once = false,
   ...rest
 }) => {
   const reduce = useReducedMotion();
+  const direction = useScrollDirection();
   const Tag = motion[as] || motion.div;
 
   if (reduce) {
@@ -54,14 +57,16 @@ export const Reveal = ({
     );
   }
 
-  const variants = addDelay(VARIANT_MAP[variant] || fadeUp, delay);
+  const resolvedVariant =
+    variant === 'up' && direction === 'up' ? fadeDown : VARIANT_MAP[variant] || fadeUp;
+  const variants = addDelay(resolvedVariant, delay);
 
   return (
     <Tag
       className={className}
       initial="hidden"
       whileInView="show"
-      viewport={{ ...viewportOnce, once, ...(amount ? { amount } : {}) }}
+      viewport={{ ...viewportReplay, once, ...(amount ? { amount } : {}) }}
       variants={variants}
       {...rest}
     >
@@ -76,6 +81,7 @@ export const Stagger = ({
   stagger = 0.09,
   delayChildren = 0.08,
   amount = 0.1,
+  once = false,
   as = 'div',
   ...rest
 }) => {
@@ -96,7 +102,7 @@ export const Stagger = ({
       className={className}
       initial="hidden"
       whileInView="show"
-      viewport={{ ...viewportOnce, amount }}
+      viewport={{ ...viewportReplay, once, amount }}
       variants={staggerContainer(stagger, delayChildren)}
       {...rest}
     >
@@ -107,6 +113,7 @@ export const Stagger = ({
 
 export const StaggerItem = ({ children, className = '', as = 'div', ...rest }) => {
   const reduce = useReducedMotion();
+  const direction = useScrollDirection();
   const Tag = motion[as] || motion.div;
 
   if (reduce) {
@@ -119,7 +126,11 @@ export const StaggerItem = ({ children, className = '', as = 'div', ...rest }) =
   }
 
   return (
-    <Tag className={className} variants={staggerItem} {...rest}>
+    <Tag
+      className={className}
+      variants={direction === 'up' ? staggerItemDown : staggerItem}
+      {...rest}
+    >
       {children}
     </Tag>
   );

@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   motion,
   useMotionValue,
   useReducedMotion,
+  useScroll,
   useSpring,
   useTransform,
 } from 'framer-motion';
@@ -35,6 +36,19 @@ const HeroSection = ({ profile, settings, socialLinks }) => {
   const [roleIndex, setRoleIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
   const reduce = useReducedMotion();
+  const heroRef = useRef(null);
+
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ['start start', 'end start'],
+  });
+  const smoothScroll = useSpring(scrollYProgress, {
+    stiffness: 90,
+    damping: 22,
+    mass: 0.4,
+  });
+  const textParallax = useTransform(smoothScroll, [0, 1], [0, 42]);
+  const avatarParallax = useTransform(smoothScroll, [0, 1], [0, 88]);
 
   const roles = React.useMemo(() => {
     try {
@@ -103,6 +117,7 @@ const HeroSection = ({ profile, settings, socialLinks }) => {
 
   return (
     <section
+      ref={heroRef}
       id="hero-section"
       className="relative min-h-[92vh] sm:min-h-[94vh] flex items-center justify-center pt-28 sm:pt-32 pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden"
     >
@@ -114,11 +129,15 @@ const HeroSection = ({ profile, settings, socialLinks }) => {
       <motion.div
         className="max-w-5xl mx-auto flex flex-col-reverse md:flex-row items-center justify-between gap-10 sm:gap-14 relative z-10 w-full"
         initial="hidden"
-        animate="show"
+        whileInView="show"
+        viewport={{ once: false, amount: 0.12, margin: '0px 0px -40px 0px' }}
         variants={heroContainer}
       >
         {/* Left Column: Greeting, Headline, Bio, Buttons */}
-        <div className="flex-1 text-center md:text-left">
+        <motion.div
+          className="flex-1 text-center md:text-left"
+          style={{ y: reduce ? 0 : textParallax }}
+        >
           {/* Status Badge */}
           <motion.div
             variants={heroItem}
@@ -247,7 +266,7 @@ const HeroSection = ({ profile, settings, socialLinks }) => {
               </div>
             </motion.div>
           )}
-        </div>
+        </motion.div>
 
         {/* Right Column: Interactive Avatar */}
         <motion.div
@@ -259,7 +278,12 @@ const HeroSection = ({ profile, settings, socialLinks }) => {
         >
           <motion.div
             className="relative will-change-transform"
-            style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
+            style={{
+              rotateX,
+              rotateY,
+              y: reduce ? 0 : avatarParallax,
+              transformStyle: 'preserve-3d',
+            }}
           >
             {/* Glow */}
             <div className="absolute -inset-10 rounded-full bg-blue-500/20 blur-3xl dark:bg-blue-500/30" />

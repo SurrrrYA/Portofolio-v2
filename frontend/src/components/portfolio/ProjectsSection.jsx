@@ -152,15 +152,15 @@ const ProjectsSection = ({ projects }) => {
       {/* Projects Grid */}
       <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <AnimatePresence mode="popLayout">
-        {visibleProjects.map((project) => (
+        {visibleProjects.map((project, index) => (
           <motion.div
             key={project.id}
             layout
             initial={{ opacity: 0, scale: 0.94, y: 24 }}
             whileInView={{ opacity: 1, scale: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.15 }}
+            viewport={{ once: false, amount: 0.1, margin: '0px 0px -60px 0px' }}
             exit={{ opacity: 0, scale: 0.92, y: 12 }}
-            transition={{ duration: 0.45, ease: easeOutExpo }}
+            transition={{ duration: 0.45, ease: easeOutExpo, delay: (index % 3) * 0.05 }}
             className="h-full"
           >
           <TiltCard

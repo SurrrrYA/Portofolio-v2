@@ -78,4 +78,16 @@ export const staggerItem = {
   },
 };
 
-export const viewportOnce = { once: true, amount: 0.12, margin: '0px 0px -60px 0px' };
+export const staggerItemDown = {
+  ...staggerItem,
+  hidden: { opacity: 0, y: -26, filter: 'blur(6px)' },
+};
+
+export const viewportReplay = {
+  once: false,
+  amount: 0.15,
+  margin: '0px 0px -70px 0px',
+};
+
+// Kept as an alias so older imports keep working.
+export const viewportOnce = viewportReplay;

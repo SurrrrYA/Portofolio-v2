@@ -102,8 +102,8 @@ const ExperienceSection = ({ experiences }) => {
             key={item.id}
             initial={{ opacity: 0, x: index % 2 === 0 ? -26 : 26 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.25 }}
-            transition={{ duration: 0.65, ease: easeOutExpo }}
+            viewport={{ once: false, amount: 0.15, margin: '0px 0px -50px 0px' }}
+            transition={{ duration: 0.65, ease: easeOutExpo, delay: (index % 3) * 0.05 }}
             className="relative group"
           >
             {/* Timeline Dot */}

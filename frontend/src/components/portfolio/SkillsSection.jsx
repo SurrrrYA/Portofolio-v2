@@ -88,7 +88,7 @@ const SkillsSection = ({ skillCategories }) => {
                           <motion.div
                             initial={{ width: 0 }}
                             whileInView={{ width: `${percent}%` }}
-                            viewport={{ once: true, amount: 0.6 }}
+                            viewport={{ once: false, amount: 0.35, margin: '0px 0px -40px 0px' }}
                             transition={{ duration: 1.05, ease: easeOutExpo, delay: 0.08 }}
                             className="h-full rounded-full bg-gradient-to-r from-blue-500 via-cyan-400 to-violet-500"
                           />

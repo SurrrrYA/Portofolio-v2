@@ -11,17 +11,21 @@ const CountUp = ({
   className = '',
 }) => {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: '0px 0px -40px 0px' });
+  const inView = useInView(ref, { once: false, margin: '0px 0px -40px 0px' });
   const reduce = useReducedMotion();
   const [display, setDisplay] = useState(0);
   const target = Number(value);
   const isValid = Number.isFinite(target);
 
   useEffect(() => {
-    if (!inView || !isValid) return;
+    if (!inView) {
+      setDisplay(0);
+      return undefined;
+    }
+    if (!isValid) return undefined;
     if (reduce) {
       setDisplay(target);
-      return;
+      return undefined;
     }
     const controls = animate(0, target, {
       duration,

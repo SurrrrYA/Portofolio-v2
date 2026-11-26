@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { MotionConfig } from 'framer-motion';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { ScrollDirectionProvider } from './contexts/ScrollDirectionContext';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ToastProvider } from './contexts/ToastContext';
 
@@ -44,6 +45,7 @@ const ProtectedRoute = ({ children }) => {
 function App() {
   return (
     <MotionConfig reducedMotion="user">
+      <ScrollDirectionProvider>
       <ThemeProvider>
         <AuthProvider>
           <ToastProvider>
@@ -85,6 +87,7 @@ function App() {
           </ToastProvider>
         </AuthProvider>
       </ThemeProvider>
+      </ScrollDirectionProvider>
     </MotionConfig>
   );
 }
